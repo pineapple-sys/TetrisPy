@@ -3,7 +3,7 @@ from src import game
 from src.config import *
 
 
-def mouv(event, actif, fix):
+def mouv(event, actif, fix, rotate):
     if event.type == py.KEYDOWN:
         x, y = 0,0
         if event.key == py.K_LEFT:
@@ -12,6 +12,8 @@ def mouv(event, actif, fix):
             x = 1
         elif event.key == py.K_DOWN:
             y = 1
+        elif event.key == py.K_UP:
+            actif = rotate(actif, fix)
         else:
             return actif
 
@@ -83,6 +85,30 @@ def show(screen,bloc):
     for i in bloc[:-1]:
         py.draw.rect(screen, bloc[-1],(i[1]*RECT_SIZE,i[0]*RECT_SIZE,RECT_SIZE,RECT_SIZE))
         py.draw.rect(screen, BACKGROUND_COLOR,(i[1]*RECT_SIZE,i[0]*RECT_SIZE,RECT_SIZE+1,RECT_SIZE+1), 4)
+
+def rotate(actif,fix):
+    actual = [[i[0]-actif[0][0],i[1]-actif[0][1]] for i in actif[:-1]]
+    cube = True if actual==[[0,0],[0,-1],[-1,0],[-1,-1]] else False
+    if not cube:
+        original = actif[:]
+        cx = actif[0][0]
+        cy = actif[0][1]
+
+        for i in range(len(actif)-1):
+            actif[i] = [actif[i][0]-cx,actif[i][1]-cy]
+        for i in range(len(actif)-1):
+            actif[i] = [-actif[i][1],actif[i][0]]
+        for i in range(len(actif)-1):
+            actif[i] = [actif[i][0]+cx,actif[i][1]+cy]
+        
+        z = []
+        for obj in fix:
+            for i in obj[:-1]:
+                z.append(i)
+        if any(i in z for i in actif[:-1]):
+            return original
+    return actif
+
 def main():
     screen = py.display.set_mode((WIDTH,HEIGHT))
     running = True
@@ -96,8 +122,9 @@ def main():
         for event in py.event.get():
             if event.type == py.QUIT:
                 running = False
-       
-            actif = mouv(event,actif, fix)
+            
+            actif = mouv(event,actif, fix, rotate)
+        
         
         actif = stop(fix, actif)
         if not actif:
@@ -108,6 +135,9 @@ def main():
         screen.fill(BACKGROUND_COLOR)
         show(screen,actif)
         showf(screen, fix)
+        for i in range(0, WIDTH+1, RECT_SIZE):
+            for j in range(0, HEIGHT+1, RECT_SIZE):
+                py.draw.rect(screen, (128,128,128),(0,0,i,j), 2)
         py.display.flip()
 
 if __name__ == "__main__":

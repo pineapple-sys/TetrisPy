@@ -4,11 +4,11 @@ from src.config import *
 
 tetromino = {
     0:((0,0),(1,0),(-1,0),(-2,0),(0,255,255)),
-    1:((0,0),(-1,0),(0,1),(-1,1),(255,255,0)),
+    1:((0,0),(-1,0),(0,-1),(-1,-1),(255,255,0)),
     2:((0,0),(1,0),(-1,0),(0,1),(255,0,255)),
     3:((0,0),(-1,0),(1,0),(-1,1),(255, 165, 0)),
     4:((0,0),(1,0),(-1,0),(1,1),(0, 0, 255)),
-    5:((0,0),(-1,0),(0,1),(1,1),(255, 0, 0)),
+    5:((0,0),(-1,-1),(0,-1),(1,0),(255, 0, 0)),
     6:((0,0),(1,0),(-1,1),(0,1),(0, 255, 0))
 
 }
@@ -36,18 +36,39 @@ def clear(fix):
     for obj in fix:
         for i in obj[:-1]:
             z.append(i)
+
     
-    for i in range(len(fix)):
-        for j in range(len(fix[i])-1):
-            y = fix[i][j][0]+1
-            x = fix[i][j][1]
-            for b in range(len(fix[i])-1):
-                print([fix[i][b][0]+1,fix[i][b][1]])
-            if any([fix[i][b][0]+1,fix[i][b][1]] in z for b in range(len(fix[i])-1)):
-                while [y,x] not in z and y<= len(car)-1:
-                    for b in range(len(fix[i])-1):
-                        fix[i][b][0]+=1
-                    y +=1
+    car = np.zeros((HEIGHT//RECT_SIZE,WIDTH//RECT_SIZE),dtype="int64")
+    for obj in fix:
+        for i in obj[:-1]:
+            if i[0]<=len(car)-1:
+                car[i[0],i[1]]=1
+    
+    # descend toutes les pieces au desssus dune ligne de 0 vides
+    ones = np.where(np.any(car==1, axis=1))[0]
+    ligne_z = np.where(np.all(car==0, axis=1))[0]
+    for ligne in ligne_z:
+        for i in range(len(fix)):
+            for j in range(len(fix[i])-1):
+                if fix[i][j][0] < ligne:
+                    fix[i][j][0]+=1
+    
+
+    """
+    if not np.all(car==0) and np.all(car[-1]==0):
+        for i in range(len(fix)):
+            for j in range(len(fix[i])-1):
+                y = fix[i][j][0]+1
+                x = fix[i][j][1]
+                if any([fix[i][b][0]+1,fix[i][b][1]] in z for b in range(len(fix[i])-1)):
+                    while [y,x] not in z and y<= len(car)-1:
+                        for b in range(len(fix[i])-1):
+                            fix[i][b][0]+=1
+                        y +=1
+
+    """
+
+
     
     """
     if not np.all(car==0) and np.all(car[-1]==0):
@@ -74,9 +95,9 @@ def start(n):
         y =0
         x = WIDTH//(RECT_SIZE*2)
         actif = []
-        for i in tetromino[n][:-1]:
+        for i in tetromino[1][:-1]:
             actif.append([y+i[1],x+i[0]]) 
-        actif.append(tetromino[n][-1])
+        actif.append(tetromino[1][-1])
         
         
         return actif
