@@ -95,9 +95,9 @@ def start(n):
         y =0
         x = WIDTH//(RECT_SIZE*2)
         actif = []
-        for i in tetromino[1][:-1]:
+        for i in tetromino[n][:-1]:
             actif.append([y+i[1],x+i[0]]) 
-        actif.append(tetromino[1][-1])
+        actif.append(tetromino[n][-1])
         
         
         return actif

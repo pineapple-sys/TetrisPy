@@ -100,12 +100,11 @@ def rotate(actif,fix):
             actif[i] = [-actif[i][1],actif[i][0]]
         for i in range(len(actif)-1):
             actif[i] = [actif[i][0]+cx,actif[i][1]+cy]
-        
         z = []
         for obj in fix:
             for i in obj[:-1]:
                 z.append(i)
-        if any(i in z for i in actif[:-1]):
+        if any(i in z for i in actif[:-1]) or any(i[1]<0 or i[1]*RECT_SIZE> WIDTH-RECT_SIZE for i in actif[:-1]):
             return original
     return actif
 
