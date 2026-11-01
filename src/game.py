@@ -53,45 +53,12 @@ def clear(fix):
                 if fix[i][j][0] < ligne:
                     fix[i][j][0]+=1
     
-
-    """
-    if not np.all(car==0) and np.all(car[-1]==0):
-        for i in range(len(fix)):
-            for j in range(len(fix[i])-1):
-                y = fix[i][j][0]+1
-                x = fix[i][j][1]
-                if any([fix[i][b][0]+1,fix[i][b][1]] in z for b in range(len(fix[i])-1)):
-                    while [y,x] not in z and y<= len(car)-1:
-                        for b in range(len(fix[i])-1):
-                            fix[i][b][0]+=1
-                        y +=1
-
-    """
-
-
-    
-    """
-    if not np.all(car==0) and np.all(car[-1]==0):
-        while np.all(car[-1]==0):
-            ones = np.argwhere(car==1)
-            new = [[i[0]+1,i[1]] for i in ones]
-            car = np.zeros((HEIGHT//RECT_SIZE,WIDTH//RECT_SIZE),dtype="int64")
-            for i in new:
-                car[i[0],i[1]] = 1
-
-            for i in range(len(fix)):
-                for j in range(len(fix[i])-1):
-                    fix[i][j][0]+=1
-
-    
-    """
     return fix
 
 
 def start(n):
     if n!= None:
 
-        
         y =0
         x = WIDTH//(RECT_SIZE*2)
         actif = []
