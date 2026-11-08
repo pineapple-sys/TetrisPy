@@ -53,11 +53,11 @@ class Piece: #Représente un tetromino
             if any([b.x,b.y+RECT_SIZE] in pos_grille for b in self.blocs):
                 for a in self.blocs:
                     grille.bloc_fixes.append(a)
-                return Piece(random.randint(1,1))
+                return Piece(random.randint(1,6))
         if any(b.y+RECT_SIZE>=HEIGHT for b in self.blocs):
             for a in self.blocs:
                 grille.bloc_fixes.append(a)
-            return Piece(random.randint(1,1))
+            return Piece(random.randint(1,6))
 
         return self
     def rotation(self,grille):
@@ -129,7 +129,7 @@ def main():
     running = True
     clock, timer = py.time.Clock(), 0
 
-    actif = Piece(random.randint(1,1))
+    actif = Piece(random.randint(1,6))
     grille = Grid()
     while running:
        
